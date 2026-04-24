@@ -21,40 +21,38 @@ Text Plus fills that gap. It's a native macOS app that launches instantly, suppo
 
 ## Installation
 
-### Option 1: Download DMG (Recommended)
-
-1. Go to the [Releases](https://github.com/kusandriadi/text-plus/releases) page
-2. Download the latest `Text Plus_<version>_aarch64.dmg`
-3. Open the DMG file
-4. Drag **Text Plus** to your **Applications** folder
-5. Launch from Applications or Spotlight
-
-> **Note:** On first launch, macOS may show a security warning since the app is not signed with an Apple Developer certificate. To open it: right-click the app > Open > Open.
-
-### Option 2: Build from source
-
-#### Prerequisites
-
-- [Bun](https://bun.sh/) (v1.0+)
-- [Rust](https://rustup.rs/) (v1.77+)
-
-#### Steps
+### Homebrew (Recommended)
 
 ```bash
-# Clone the repository
-git clone https://github.com/kusandriadi/text-plus.git
-cd text-plus
-
-# Install dependencies
-bun install
-
-# Build the app
-bunx tauri build
+brew tap kusandriadi/tap
+brew install --cask text-plus
 ```
 
-The built app will be at:
-- `src-tauri/target/release/bundle/macos/Text Plus.app`
-- `src-tauri/target/release/bundle/dmg/Text Plus_<version>_aarch64.dmg`
+To update:
+
+```bash
+brew upgrade --cask text-plus
+```
+
+### Download DMG
+
+1. Go to the [Releases](https://github.com/kusandriadi/text-plus/releases) page
+2. Download the DMG for your architecture:
+   - `Text Plus_<version>_aarch64.dmg` — Apple Silicon (M1/M2/M3/M4)
+   - `Text Plus_<version>_x86_64.dmg` — Intel
+3. Open the DMG and drag **Text Plus** to **Applications**
+
+> **Note:** On first launch, macOS may show a security warning. To open: right-click the app > Open > Open.
+
+### Build from source
+
+```bash
+# Prerequisites: Bun (v1.0+) and Rust (v1.77+)
+git clone https://github.com/kusandriadi/text-plus.git
+cd text-plus
+bun install
+bunx tauri build
+```
 
 ## System Requirements
 
