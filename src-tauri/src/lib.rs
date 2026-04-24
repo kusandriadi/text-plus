@@ -1,5 +1,14 @@
+use std::process::Command;
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+  // Disable macOS press-and-hold accent popup for this app
+  // This enables key repeat behavior expected in code editors
+  let bundle_id = "com.textplus.editor";
+  let _ = Command::new("defaults")
+    .args(["write", bundle_id, "ApplePressAndHoldEnabled", "-bool", "false"])
+    .output();
+
   tauri::Builder::default()
     .plugin(tauri_plugin_dialog::init())
     .plugin(tauri_plugin_fs::init())
