@@ -153,7 +153,7 @@ jobs:
           VERSION="${{ needs.prepare.outputs.release }}"
           SHA="${{ steps.sha.outputs.sha256 }}"
 
-          git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/kusandriadi/homebrew-tap.git
+          git clone https://x-access-token:${{ secrets.HOMEBREW_TAP_TOKEN }}@github.com/kusandriadi/homebrew-tap.git
           cd homebrew-tap
 
           git config user.name "github-actions[bot]"
