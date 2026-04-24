@@ -11,6 +11,7 @@ export const SHORTCUTS: ShortcutSection[] = [
       { keys: "Cmd+O", action: "Open File" },
       { keys: "Cmd+S", action: "Save" },
       { keys: "Cmd+Shift+S", action: "Save As" },
+      { keys: "Cmd+P", action: "Print" },
       { keys: "Cmd+W", action: "Close Tab" },
     ],
   },

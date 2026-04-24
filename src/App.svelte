@@ -164,6 +164,28 @@
     );
   }
 
+  function handlePrint() {
+    const printWindow = window.open("", "_blank");
+    if (!printWindow) return;
+
+    const title = getTabDisplayName(activeTab);
+    const escaped = activeTab.content
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+
+    printWindow.document.write(`<!DOCTYPE html>
+<html><head><title>${title}</title>
+<style>
+  body { font-family: 'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace; font-size: 12px; line-height: 1.5; margin: 20px; white-space: pre-wrap; word-wrap: break-word; }
+  @media print { body { margin: 0; } }
+</style>
+</head><body>${escaped}</body></html>`);
+    printWindow.document.close();
+    printWindow.print();
+    printWindow.close();
+  }
+
   function handleContentChange(value: string) { tabs = updateTabById(tabs, activeTabId, { content: value }); }
   function handleLanguageChange(lang: LanguageId) { tabs = updateTabById(tabs, activeTabId, { language: lang }); }
 
@@ -176,6 +198,7 @@
     else if (e.metaKey && e.key === "s") { e.preventDefault(); handleSaveFile(); }
     else if (e.metaKey && e.key === "w") { e.preventDefault(); handleCloseTab(activeTabId); }
     else if (e.metaKey && e.shiftKey && e.key === "f") { e.preventDefault(); handleFormat(); }
+    else if (e.metaKey && e.key === "p") { e.preventDefault(); handlePrint(); }
     else if (e.altKey && e.key === "z") { e.preventDefault(); wordWrap = !wordWrap; }
   }
 </script>
@@ -188,6 +211,7 @@
     onNewFile={handleNewFile} onOpenFile={handleOpenFile}
     onSaveFile={handleSaveFile} onSaveAsFile={handleSaveAsFile}
     onFormat={handleFormat}
+    onPrint={handlePrint}
     onCloseTab={() => handleCloseTab(activeTabId)} onCloseAllTabs={handleCloseAllTabs}
     onToggleWordWrap={() => wordWrap = !wordWrap}
     onToggleTheme={() => theme = theme === "light" ? "dark" : "light"}

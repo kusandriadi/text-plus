@@ -10,6 +10,7 @@
     onSaveFile: () => void;
     onSaveAsFile: () => void;
     onFormat: () => void;
+    onPrint: () => void;
     onCloseTab: () => void;
     onCloseAllTabs: () => void;
     onToggleWordWrap: () => void;
@@ -19,7 +20,7 @@
     onLanguageChange: (lang: LanguageId) => void;
   }
 
-  let { theme, language, wordWrap, onNewFile, onOpenFile, onSaveFile, onSaveAsFile, onFormat, onCloseTab, onCloseAllTabs, onToggleWordWrap, onToggleTheme, onShowAbout, onShowShortcuts, onLanguageChange }: Props = $props();
+  let { theme, language, wordWrap, onNewFile, onOpenFile, onSaveFile, onSaveAsFile, onFormat, onPrint, onCloseTab, onCloseAllTabs, onToggleWordWrap, onToggleTheme, onShowAbout, onShowShortcuts, onLanguageChange }: Props = $props();
 
   type MenuKey = "file" | "view" | "format" | "language" | "help";
   let openMenu = $state<MenuKey | null>(null);
@@ -66,6 +67,8 @@
             {@render sep()}
             {@render item("Save", onSaveFile, "Cmd+S")}
             {@render item("Save As...", onSaveAsFile, "Cmd+Shift+S")}
+            {@render sep()}
+            {@render item("Print", onPrint, "Cmd+P")}
             {@render sep()}
             {@render item("Close Tab", onCloseTab, "Cmd+W")}
             {@render item("Close All Tabs", onCloseAllTabs)}
