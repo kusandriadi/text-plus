@@ -82,11 +82,28 @@ jobs:
           mv src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/*.dmg \
              src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/text-plus_${VERSION}.dmg
 
+      - name: Compute SHA256
+        id: sha
+        run: |
+          VERSION="${{ needs.prepare.outputs.release }}"
+          SHA=$(shasum -a 256 src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/text-plus_${VERSION}.dmg | awk '{print $1}')
+          echo "sha256=$SHA" >> "$GITHUB_OUTPUT"
+          echo "DMG SHA256: $SHA"
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: macos-dmg
           path: src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/text-plus_*.dmg
+
+      - name: Save SHA256
+        run: echo "${{ steps.sha.outputs.sha256 }}" > /tmp/sha256.txt
+
+      - name: Upload SHA256
+        uses: actions/upload-artifact@v4
+        with:
+          name: sha256
+          path: /tmp/sha256.txt
 
   release:
     needs: [prepare, build]
@@ -98,11 +115,21 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Download artifacts
+      - name: Download DMG
         uses: actions/download-artifact@v4
         with:
           name: macos-dmg
           path: artifacts
+
+      - name: Download SHA256
+        uses: actions/download-artifact@v4
+        with:
+          name: sha256
+          path: .
+
+      - name: Read SHA256
+        id: sha
+        run: echo "sha256=$(cat sha256.txt)" >> "$GITHUB_OUTPUT"
 
       - name: Create tag
         run: |
@@ -111,7 +138,7 @@ jobs:
           git tag -a "v${{ needs.prepare.outputs.release }}" -m "Release v${{ needs.prepare.outputs.release }}"
           git push origin "v${{ needs.prepare.outputs.release }}"
 
-      - name: Create GitHub Release with DMG
+      - name: Create GitHub Release
         run: |
           RELEASE_VERSION="${{ needs.prepare.outputs.release }}"
           gh release create "v${RELEASE_VERSION}" \
@@ -120,6 +147,44 @@ jobs:
             artifacts/*.dmg
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update Homebrew Cask
+        run: |
+          VERSION="${{ needs.prepare.outputs.release }}"
+          SHA="${{ steps.sha.outputs.sha256 }}"
+
+          git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/kusandriadi/homebrew-tap.git
+          cd homebrew-tap
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          cat > Casks/text-plus.rb << CASKEOF
+          cask "text-plus" do
+            version "${VERSION}"
+            sha256 "${SHA}"
+
+            url "https://github.com/kusandriadi/text-plus/releases/download/v#{version}/text-plus_#{version}.dmg"
+            name "Text Plus"
+            desc "Lightweight code editor for macOS — Notepad++ alternative"
+            homepage "https://github.com/kusandriadi/text-plus"
+
+            depends_on macos: ">= :catalina"
+            depends_on arch: :arm64
+
+            app "text-plus.app"
+
+            zap trash: [
+              "~/Library/Caches/com.textplus.editor",
+              "~/Library/Preferences/com.textplus.editor.plist",
+              "~/Library/Saved Application State/com.textplus.editor.savedState",
+            ]
+          end
+          CASKEOF
+
+          git add Casks/text-plus.rb
+          git commit -m "Update text-plus to v${VERSION} (sha256: ${SHA})" || exit 0
+          git push
 
       - name: Bump to next snapshot version
         run: |
