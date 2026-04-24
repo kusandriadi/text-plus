@@ -1,0 +1,45 @@
+name: Update Homebrew Cask
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  update-cask:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update homebrew-tap
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+
+          git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/kusandriadi/homebrew-tap.git
+          cd homebrew-tap
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          cat > Casks/text-plus.rb << CASKEOF
+          cask "text-plus" do
+            version "${VERSION}"
+            sha256 :no_check
+
+            url "https://github.com/kusandriadi/text-plus/releases/download/v#{version}/Text.Plus_#{version}_aarch64.dmg"
+            name "Text Plus"
+            desc "Lightweight code editor for macOS — Notepad++ alternative"
+            homepage "https://github.com/kusandriadi/text-plus"
+
+            depends_on macos: ">= :catalina"
+
+            app "Text Plus.app"
+
+            zap trash: [
+              "~/Library/Caches/com.textplus.editor",
+              "~/Library/Preferences/com.textplus.editor.plist",
+              "~/Library/Saved Application State/com.textplus.editor.savedState",
+            ]
+          end
+          CASKEOF
+
+          git add Casks/text-plus.rb
+          git commit -m "Update text-plus to v${VERSION}" || exit 0
+          git push
