@@ -18,19 +18,20 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          cat > Casks/text-plus.rb << CASKEOF
+          cat > Casks/text-plus.rb << 'CASKEOF'
           cask "text-plus" do
-            version "${VERSION}"
+            version "REPLACE_VERSION"
             sha256 :no_check
 
-            url "https://github.com/kusandriadi/text-plus/releases/download/v#{version}/Text.Plus_#{version}_aarch64.dmg"
+            url "https://github.com/kusandriadi/text-plus/releases/download/v#{version}/text-plus_#{version}.dmg"
             name "Text Plus"
             desc "Lightweight code editor for macOS — Notepad++ alternative"
             homepage "https://github.com/kusandriadi/text-plus"
 
             depends_on macos: ">= :catalina"
+            depends_on arch: :arm64
 
-            app "Text Plus.app"
+            app "text-plus.app"
 
             zap trash: [
               "~/Library/Caches/com.textplus.editor",
@@ -39,6 +40,8 @@ jobs:
             ]
           end
           CASKEOF
+
+          sed -i "s/REPLACE_VERSION/${VERSION}/g" Casks/text-plus.rb
 
           git add Casks/text-plus.rb
           git commit -m "Update text-plus to v${VERSION}" || exit 0

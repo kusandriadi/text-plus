@@ -37,10 +37,8 @@ brew upgrade --cask text-plus
 ### Download DMG
 
 1. Go to the [Releases](https://github.com/kusandriadi/text-plus/releases) page
-2. Download the DMG for your architecture:
-   - `Text Plus_<version>_aarch64.dmg` — Apple Silicon (M1/M2/M3/M4)
-   - `Text Plus_<version>_x86_64.dmg` — Intel
-3. Open the DMG and drag **Text Plus** to **Applications**
+2. Download `text-plus_<version>.dmg`
+3. Open the DMG and drag **text-plus** to **Applications**
 
 > **Note:** On first launch, macOS may show a security warning. To open: right-click the app > Open > Open.
 
@@ -68,7 +66,7 @@ bunx tauri build
 | macOS 10.15 Catalina | Yes |
 | macOS 10.14 Mojave and below | No |
 
-Architecture: Apple Silicon (arm64) and Intel (x86_64)
+Architecture: Apple Silicon (arm64) only
 
 ## Supported Languages
 

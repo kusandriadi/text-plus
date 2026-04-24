@@ -1,6 +1,6 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "Text Plus",
+  "productName": "text-plus",
   "version": "0.1.0",
   "identifier": "com.textplus.editor",
   "build": {
