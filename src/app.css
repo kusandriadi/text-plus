@@ -53,10 +53,3 @@
   background-color: #264f78 !important;
 }
 
-/* Make selection layer paint over active line background */
-.cm-editor .cm-selectionLayer {
-  z-index: 1 !important;
-}
-.cm-editor .cm-selectionBackground {
-  opacity: 1 !important;
-}
