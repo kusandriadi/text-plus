@@ -1,16 +1,24 @@
 <script lang="ts">
+  import { getVersion } from "@tauri-apps/api/app";
+  import { onMount } from "svelte";
+
   interface Props {
     theme: "light" | "dark";
     onClose: () => void;
   }
   let { theme, onClose }: Props = $props();
   let isDark = $derived(theme === "dark");
+  let appVersion = $state("...");
+
+  onMount(async () => {
+    appVersion = await getVersion();
+  });
 </script>
 
 <div class="overlay" onclick={onClose} onkeydown={(e) => e.key === 'Escape' && onClose()} role="dialog" tabindex="-1">
   <div class="dialog" class:dark={isDark} onclick={(e) => e.stopPropagation()} role="presentation">
     <h2 class="title">Text Plus</h2>
-    <p class="version">Version 0.1.0</p>
+    <p class="version">Version {appVersion}</p>
     <p class="desc">A lightweight code editor for macOS.</p>
 
     <div class="features" class:dark={isDark}>
