@@ -5,14 +5,60 @@
   interface Props {
     content: string;
     theme: "light" | "dark";
+    cursorLine: number;
   }
 
-  let { content, theme }: Props = $props();
+  let { content, theme, cursorLine }: Props = $props();
   let isDark = $derived(theme === "dark");
-  let html = $derived(DOMPurify.sanitize(marked.parse(content, { async: false }) as string));
+
+  // Compute line map from tokens
+  let lineMap = $derived.by(() => {
+    const tokens = marked.lexer(content);
+    const map: number[] = [];
+    let searchFrom = 0;
+    for (const token of tokens) {
+      if (token.type === "space") continue;
+      const idx = content.indexOf(token.raw, searchFrom);
+      if (idx >= 0) {
+        map.push(content.substring(0, idx).split("\n").length);
+        searchFrom = idx + token.raw.length;
+      }
+    }
+    return map;
+  });
+
+  let html = $derived(DOMPurify.sanitize(marked.parse(content, { async: false, breaks: true }) as string));
+
+  let previewEl: HTMLDivElement;
+  let rafId = 0;
+
+  function scrollToLine(line: number) {
+    cancelAnimationFrame(rafId);
+    rafId = requestAnimationFrame(() => {
+      if (!previewEl) return;
+      const children = previewEl.children;
+      let childIdx = 0;
+      let target: Element | null = null;
+
+      // Map children to lineMap (skip space tokens = skip lineMap gaps)
+      for (let i = 0; i < lineMap.length && childIdx < children.length; i++) {
+        if (lineMap[i] <= line) target = children[childIdx];
+        else break;
+        childIdx++;
+      }
+
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    });
+  }
+
+  $effect(() => {
+    scrollToLine(cursorLine);
+  });
 </script>
 
-<div class="preview" class:dark={isDark}>
+<div bind:this={previewEl} class="preview" class:dark={isDark}>
   {@html html}
 </div>
 

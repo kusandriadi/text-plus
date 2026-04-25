@@ -48,7 +48,7 @@
     if (activeTab) {
       const name = getTabDisplayName(activeTab);
       const mod = isTabModified(activeTab) ? " *" : "";
-      getCurrentWindow().setTitle(`Text Plus - ${name}${mod}`);
+      getCurrentWindow().setTitle(`Text Plus - ${name}${mod}`).catch(() => {});
     }
   });
 
@@ -88,15 +88,23 @@
       savePath = await saveFileDialog();
       if (!savePath) return;
     }
-    await writeFile(savePath, activeTab.content);
-    tabs = updateTabById(tabs, activeTab.id, markTabSaved(activeTab, savePath));
+    try {
+      await writeFile(savePath, activeTab.content);
+      tabs = updateTabById(tabs, activeTab.id, markTabSaved(activeTab, savePath));
+    } catch (e) {
+      toast = e instanceof Error ? e.message : "Failed to save file";
+    }
   }
 
   async function handleSaveAsFile() {
     const savePath = await saveFileDialog();
     if (!savePath) return;
-    await writeFile(savePath, activeTab.content);
-    tabs = updateTabById(tabs, activeTab.id, markTabSaved(activeTab, savePath));
+    try {
+      await writeFile(savePath, activeTab.content);
+      tabs = updateTabById(tabs, activeTab.id, markTabSaved(activeTab, savePath));
+    } catch (e) {
+      toast = e instanceof Error ? e.message : "Failed to save file";
+    }
   }
 
   async function handleFormat() {
@@ -108,8 +116,7 @@
     try {
       const formatted = await formatCode(activeTab.content, activeTab.language);
       tabs = updateTabById(tabs, activeTab.id, { content: formatted });
-    } catch (e) {
-      console.error("Format error:", e);
+    } catch {
       toast = "Failed to format document";
     }
   }
@@ -274,7 +281,7 @@
       />
     {/key}
     {#if activeTab.language === "markdown"}
-      <MarkdownPreview content={activeTab.content} {theme} />
+      <MarkdownPreview content={activeTab.content} {theme} cursorLine={line} />
     {/if}
   </div>
 

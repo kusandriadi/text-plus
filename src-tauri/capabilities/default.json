@@ -7,6 +7,9 @@
   ],
   "permissions": [
     "core:default",
+    "core:window:allow-set-title",
+    "core:window:allow-close",
+    "core:app:default",
     "dialog:default",
     "dialog:allow-open",
     "dialog:allow-save",
