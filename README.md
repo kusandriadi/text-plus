@@ -2,9 +2,15 @@
 
 A lightweight, fast code editor for macOS.
 
-![Text Editor](assets/text-editor.png)
+### Text Editor — Light Mode
+Multi-tab editing with syntax highlighting, line numbers, and a clean status bar.
 
-![Markdown Editor](assets/md-editor.png)
+<img src="assets/text-editor.png" alt="Text Editor - Light Mode" width="700">
+
+### Markdown Editor — Dark Mode
+Live split-view preview that updates as you type.
+
+<img src="assets/md-editor.png" alt="Markdown Editor - Dark Mode" width="700">
 
 ## Why TextNG?
 
