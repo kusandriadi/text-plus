@@ -82,15 +82,13 @@ jobs:
 
       - name: Rename DMG
         run: |
-          VERSION="${{ needs.prepare.outputs.release }}"
           mv src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/*.dmg \
-             src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/text-plus_${VERSION}.dmg
+             src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/TextPlus.dmg
 
       - name: Compute SHA256
         id: sha
         run: |
-          VERSION="${{ needs.prepare.outputs.release }}"
-          SHA=$(shasum -a 256 src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/text-plus_${VERSION}.dmg | awk '{print $1}')
+          SHA=$(shasum -a 256 src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/TextPlus.dmg | awk '{print $1}')
           echo "sha256=$SHA" >> "$GITHUB_OUTPUT"
           echo "DMG SHA256: $SHA"
 
@@ -98,7 +96,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: macos-dmg
-          path: src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/text-plus_*.dmg
+          path: src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/TextPlus.dmg
 
       - name: Save SHA256
         run: echo "${{ steps.sha.outputs.sha256 }}" > /tmp/sha256.txt
@@ -168,7 +166,7 @@ jobs:
             version "${VERSION}"
             sha256 "${SHA}"
 
-            url "https://github.com/kusandriadi/text-plus/releases/download/v#{version}/text-plus_#{version}.dmg"
+            url "https://github.com/kusandriadi/text-plus/releases/download/v#{version}/TextPlus.dmg"
             name "Text Plus"
             desc "Lightweight code editor for macOS — Notepad++ alternative"
             homepage "https://github.com/kusandriadi/text-plus"
@@ -176,11 +174,11 @@ jobs:
             depends_on macos: ">= :catalina"
             depends_on arch: :arm64
 
-            app "text-plus.app"
+            app "TextPlus.app"
 
             postflight do
               system_command "/usr/bin/xattr",
-                             args: ["-cr", "#{appdir}/text-plus.app"]
+                             args: ["-cr", "#{appdir}/TextPlus.app"]
             end
 
             zap trash: [

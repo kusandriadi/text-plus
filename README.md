@@ -39,8 +39,8 @@ brew upgrade --no-quarantine --cask text-plus
 ### Download DMG
 
 1. Go to the [Releases](https://github.com/kusandriadi/text-plus/releases) page
-2. Download `text-plus_<version>.dmg`
-3. Open the DMG and drag **text-plus** to **Applications**
+2. Download `TextPlus.dmg`
+3. Open the DMG and drag **TextPlus** to **Applications**
 
 > **Note:** On first launch, macOS may show a security warning. To open: right-click the app > Open > Open.
 
