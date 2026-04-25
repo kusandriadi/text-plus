@@ -90,7 +90,7 @@
           {:else if menu.key === "help"}
             {@render item("Keyboard Shortcuts", onShowShortcuts)}
             {@render sep()}
-            {@render item("About Text Plus", onShowAbout)}
+            {@render item("About TextNG", onShowAbout)}
           {/if}
         </div>
       {/if}

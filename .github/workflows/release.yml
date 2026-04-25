@@ -83,12 +83,12 @@ jobs:
       - name: Rename DMG
         run: |
           mv src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/*.dmg \
-             src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/TextPlus.dmg
+             src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/TextNG.dmg
 
       - name: Compute SHA256
         id: sha
         run: |
-          SHA=$(shasum -a 256 src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/TextPlus.dmg | awk '{print $1}')
+          SHA=$(shasum -a 256 src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/TextNG.dmg | awk '{print $1}')
           echo "sha256=$SHA" >> "$GITHUB_OUTPUT"
           echo "DMG SHA256: $SHA"
 
@@ -96,7 +96,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: macos-dmg
-          path: src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/TextPlus.dmg
+          path: src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/TextNG.dmg
 
       - name: Save SHA256
         run: echo "${{ steps.sha.outputs.sha256 }}" > /tmp/sha256.txt
@@ -161,35 +161,37 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          cat > Casks/text-plus.rb << CASKEOF
-          cask "text-plus" do
+          git rm -f Casks/text-plus.rb 2>/dev/null || true
+
+          cat > Casks/textng.rb << CASKEOF
+          cask "textng" do
             version "${VERSION}"
             sha256 "${SHA}"
 
-            url "https://github.com/kusandriadi/text-plus/releases/download/v#{version}/TextPlus.dmg"
-            name "Text Plus"
-            desc "Lightweight code editor for macOS — Notepad++ alternative"
-            homepage "https://github.com/kusandriadi/text-plus"
+            url "https://github.com/kusandriadi/textng/releases/download/v#{version}/TextNG.dmg"
+            name "TextNG"
+            desc "Lightweight code editor for macOS"
+            homepage "https://github.com/kusandriadi/textng"
 
             depends_on macos: ">= :catalina"
             depends_on arch: :arm64
 
-            app "TextPlus.app"
+            app "TextNG.app"
 
             postflight do
               system_command "/usr/bin/xattr",
-                             args: ["-cr", "#{appdir}/TextPlus.app"]
+                             args: ["-cr", "#{appdir}/TextNG.app"]
             end
 
             zap trash: [
-              "~/Library/Preferences/com.textplus.editor.plist",
-              "~/Library/Saved Application State/com.textplus.editor.savedState",
+              "~/Library/Preferences/com.textng.editor.plist",
+              "~/Library/Saved Application State/com.textng.editor.savedState",
             ]
           end
           CASKEOF
 
-          git add Casks/text-plus.rb
-          git commit -m "Update text-plus to v${VERSION} (sha256: ${SHA})" || exit 0
+          git add Casks/textng.rb
+          git commit -m "Rename cask to textng, update to v${VERSION}" || exit 0
           git push
 
       - name: Bump to next snapshot version

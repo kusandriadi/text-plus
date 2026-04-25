@@ -15,9 +15,9 @@
   });
 </script>
 
-<div class="overlay" onclick={onClose} onkeydown={(e) => e.key === 'Escape' && onClose()} role="dialog" aria-label="About Text Plus" tabindex="-1">
+<div class="overlay" onclick={onClose} onkeydown={(e) => e.key === 'Escape' && onClose()} role="dialog" aria-label="About TextNG" tabindex="-1">
   <div class="dialog" class:dark={isDark} onclick={(e) => e.stopPropagation()} role="presentation">
-    <h2 class="title">Text Plus</h2>
+    <h2 class="title">TextNG</h2>
     <p class="version">Version {appVersion}</p>
     <p class="desc">A lightweight code editor for macOS.</p>
 
@@ -34,8 +34,8 @@
 
     <p class="author">Created by <strong>Kus Andriadi</strong></p>
     <p class="link">
-      <a href="https://github.com/kusandriadi/text-plus" target="_blank" rel="noopener noreferrer">
-        github.com/kusandriadi/text-plus
+      <a href="https://github.com/kusandriadi/textng" target="_blank" rel="noopener noreferrer">
+        github.com/kusandriadi/textng
       </a>
     </p>
     <p class="tech">Built with Tauri + Svelte + CodeMirror</p>

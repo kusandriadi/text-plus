@@ -1,12 +1,12 @@
-# Text Plus
+# TextNG
 
-A lightweight, fast code editor for macOS — built as a Notepad++ alternative for Mac users.
+A lightweight, fast code editor for macOS.
 
-## Why Text Plus?
+## Why TextNG?
 
-If you've ever used Notepad++ on Windows, you know how useful a lightweight text editor can be — fast to open, easy to use, with just enough features to get the job done. Unfortunately, Notepad++ is not available on macOS. Most alternatives are either too heavy (VS Code, Sublime Text) or too basic (TextEdit).
+Most code editors are either too heavy (VS Code, Sublime Text) or too basic (TextEdit).
 
-Text Plus fills that gap. It's a native macOS app that launches instantly, supports syntax highlighting for 15+ languages, and stays out of your way. No extensions to install, no configuration files to manage — just open it and start editing.
+TextNG fills that gap. It's a native macOS app that launches instantly, supports syntax highlighting for 15+ languages, and stays out of your way. No extensions to install, no configuration files to manage — just open it and start editing.
 
 ## Features
 
@@ -25,22 +25,22 @@ Text Plus fills that gap. It's a native macOS app that launches instantly, suppo
 
 ```bash
 brew tap kusandriadi/tap
-brew install --no-quarantine --cask text-plus
+brew install --no-quarantine --cask textng
 ```
 
 To update:
 
 ```bash
-brew upgrade --no-quarantine --cask text-plus
+brew upgrade --no-quarantine --cask textng
 ```
 
 > `--no-quarantine` is needed because the app is not signed with an Apple Developer certificate.
 
 ### Download DMG
 
-1. Go to the [Releases](https://github.com/kusandriadi/text-plus/releases) page
-2. Download `TextPlus.dmg`
-3. Open the DMG and drag **TextPlus** to **Applications**
+1. Go to the [Releases](https://github.com/kusandriadi/textng/releases) page
+2. Download `TextNG.dmg`
+3. Open the DMG and drag **TextNG** to **Applications**
 
 > **Note:** On first launch, macOS may show a security warning. To open: right-click the app > Open > Open.
 
@@ -48,8 +48,8 @@ brew upgrade --no-quarantine --cask text-plus
 
 ```bash
 # Prerequisites: Bun (v1.0+) and Rust (v1.77+)
-git clone https://github.com/kusandriadi/text-plus.git
-cd text-plus
+git clone https://github.com/kusandriadi/textng.git
+cd textng
 bun install
 bunx tauri build
 ```

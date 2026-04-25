@@ -1,6 +1,6 @@
 import type { Tab } from "./types";
 
-const STORAGE_KEY = "textplus_session";
+const STORAGE_KEY = "textng_session";
 
 interface SessionData {
   tabs: Tab[];

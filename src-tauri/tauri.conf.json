@@ -1,8 +1,8 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "TextPlus",
+  "productName": "TextNG",
   "version": "0.1.0",
-  "identifier": "com.textplus.editor",
+  "identifier": "com.textng.editor",
   "build": {
     "frontendDist": "../dist",
     "devUrl": "http://localhost:5173",
@@ -13,7 +13,7 @@
     "windows": [
       {
         "label": "main",
-        "title": "Text Plus - Untitled",
+        "title": "TextNG - Untitled",
         "width": 1200,
         "height": 800,
         "minWidth": 600,

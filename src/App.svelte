@@ -48,7 +48,7 @@
     if (activeTab) {
       const name = getTabDisplayName(activeTab);
       const mod = isTabModified(activeTab) ? " *" : "";
-      getCurrentWindow().setTitle(`Text Plus - ${name}${mod}`).catch(() => {});
+      getCurrentWindow().setTitle(`TextNG - ${name}${mod}`).catch(() => {});
     }
   });
 
