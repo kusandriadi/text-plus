@@ -2,6 +2,10 @@
 
 A lightweight, fast code editor for macOS.
 
+![Text Editor](assets/text-editor.png)
+
+![Markdown Editor](assets/md-editor.png)
+
 ## Why TextNG?
 
 Most code editors are either too heavy (VS Code, Sublime Text) or too basic (TextEdit).

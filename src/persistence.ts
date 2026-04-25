@@ -31,3 +31,40 @@ export function loadSession(): SessionData | null {
 export function clearSession(): void {
   localStorage.removeItem(STORAGE_KEY);
 }
+
+const RECENTS_KEY = "textng_recents";
+const MAX_RECENTS = 10;
+
+export function addRecentFile(filePath: string): void {
+  const recents = getRecentFiles().filter((p) => p !== filePath);
+  recents.unshift(filePath);
+  try {
+    localStorage.setItem(RECENTS_KEY, JSON.stringify(recents.slice(0, MAX_RECENTS)));
+  } catch {
+    // Storage full or unavailable
+  }
+}
+
+export function getRecentFiles(): string[] {
+  try {
+    const raw = localStorage.getItem(RECENTS_KEY);
+    if (!raw) return [];
+    const data = JSON.parse(raw);
+    return Array.isArray(data) ? data : [];
+  } catch {
+    return [];
+  }
+}
+
+export function removeRecentFile(filePath: string): void {
+  const recents = getRecentFiles().filter((p) => p !== filePath);
+  try {
+    localStorage.setItem(RECENTS_KEY, JSON.stringify(recents));
+  } catch {
+    // Storage full or unavailable
+  }
+}
+
+export function clearRecentFiles(): void {
+  localStorage.removeItem(RECENTS_KEY);
+}

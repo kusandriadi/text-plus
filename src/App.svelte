@@ -12,7 +12,7 @@
   import { type LanguageId } from "./languages";
   import { formatCode, canFormat } from "./formatter";
   import { createTab, isTabModified, getTabDisplayName, type Tab } from "./types";
-  import { saveSession, loadSession, clearSession } from "./persistence";
+  import { saveSession, loadSession, clearSession, addRecentFile, getRecentFiles, removeRecentFile, clearRecentFiles } from "./persistence";
   import { openFileDialog, saveFileDialog, readFile, writeFile } from "./file-operations";
   import { createNewTab, updateTabById, removeTab, findTabByPath, isEmptyTab, tabFromFile, markTabSaved } from "./tab-manager";
   import { getSystemTheme, type ThemeMode } from "./theme";
@@ -27,6 +27,7 @@
   let wordWrap = $state(false);
   let theme = $state<ThemeMode>(getSystemTheme());
   let confirmDialog = $state<{ message: string; onConfirm: () => void } | null>(null);
+  let recentFiles = $state<string[]>(getRecentFiles());
 
   // Restore session or start fresh
   const session = loadSession();
@@ -60,15 +61,14 @@
     activeTabId = newTab.id;
   }
 
-  async function handleOpenFile() {
-    const path = await openFileDialog();
-    if (!path) return;
-
+  async function openFilePath(path: string) {
     const existing = findTabByPath(tabs, path);
     if (existing) { activeTabId = existing.id; return; }
 
     try {
       const text = await readFile(path);
+      addRecentFile(path);
+      recentFiles = getRecentFiles();
       if (isEmptyTab(activeTab)) {
         const fileTab = tabFromFile(path, text);
         tabs = updateTabById(tabs, activeTab.id, fileTab);
@@ -78,8 +78,23 @@
         activeTabId = newTab.id;
       }
     } catch (e) {
-      toast = e instanceof Error ? e.message : "Failed to open file";
+      removeRecentFile(path);
+      recentFiles = getRecentFiles();
+      toast = "File not found. It may have been deleted, moved, or renamed.";
     }
+  }
+
+  async function handleOpenFile() {
+    const path = await openFileDialog();
+    if (!path) return;
+    await openFilePath(path);
+  }
+
+  async function handleOpenRecent(path: string) { await openFilePath(path); }
+
+  function handleClearRecents() {
+    clearRecentFiles();
+    recentFiles = [];
   }
 
   async function handleSaveFile() {
@@ -91,6 +106,8 @@
     try {
       await writeFile(savePath, activeTab.content);
       tabs = updateTabById(tabs, activeTab.id, markTabSaved(activeTab, savePath));
+      addRecentFile(savePath);
+      recentFiles = getRecentFiles();
     } catch (e) {
       toast = e instanceof Error ? e.message : "Failed to save file";
     }
@@ -102,6 +119,8 @@
     try {
       await writeFile(savePath, activeTab.content);
       tabs = updateTabById(tabs, activeTab.id, markTabSaved(activeTab, savePath));
+      addRecentFile(savePath);
+      recentFiles = getRecentFiles();
     } catch (e) {
       toast = e instanceof Error ? e.message : "Failed to save file";
     }
@@ -253,8 +272,8 @@
 
 <div class="app-root {isDark ? 'theme-dark' : 'theme-light'}">
   <MenuBar
-    {theme} language={activeTab.language} {wordWrap}
-    onNewFile={handleNewFile} onOpenFile={handleOpenFile}
+    {theme} language={activeTab.language} {wordWrap} {recentFiles}
+    onNewFile={handleNewFile} onOpenFile={handleOpenFile} onOpenRecent={handleOpenRecent} onClearRecents={handleClearRecents}
     onSaveFile={handleSaveFile} onSaveAsFile={handleSaveAsFile}
     onFormat={handleFormat}
     onPrint={handlePrint}

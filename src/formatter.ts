@@ -14,7 +14,7 @@ const parserMap: Partial<Record<LanguageId, string>> = {
   tsx: "typescript",
   html: "html",
   css: "css",
-  json: "json",
+  json: "json-stringify",
   markdown: "markdown",
 };
 

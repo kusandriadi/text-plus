@@ -5,8 +5,11 @@
     theme: "light" | "dark";
     language: LanguageId;
     wordWrap: boolean;
+    recentFiles: string[];
     onNewFile: () => void;
     onOpenFile: () => void;
+    onOpenRecent: (path: string) => void;
+    onClearRecents: () => void;
     onSaveFile: () => void;
     onSaveAsFile: () => void;
     onFormat: () => void;
@@ -21,7 +24,7 @@
     onLanguageChange: (lang: LanguageId) => void;
   }
 
-  let { theme, language, wordWrap, onNewFile, onOpenFile, onSaveFile, onSaveAsFile, onFormat, onPrint, onCloseTab, onCloseAllTabs, onClearAppData, onToggleWordWrap, onToggleTheme, onShowAbout, onShowShortcuts, onLanguageChange }: Props = $props();
+  let { theme, language, wordWrap, recentFiles, onNewFile, onOpenFile, onOpenRecent, onClearRecents, onSaveFile, onSaveAsFile, onFormat, onPrint, onCloseTab, onCloseAllTabs, onClearAppData, onToggleWordWrap, onToggleTheme, onShowAbout, onShowShortcuts, onLanguageChange }: Props = $props();
 
   type MenuKey = "file" | "view" | "format" | "language" | "help";
   let openMenu = $state<MenuKey | null>(null);
@@ -67,6 +70,25 @@
           {#if menu.key === "file"}
             {@render item("New File", onNewFile, "Cmd+N")}
             {@render item("Open File", onOpenFile, "Cmd+O")}
+            {#if recentFiles.length > 0}
+              <div class="submenu-wrapper"
+                onmouseenter={() => hoveredItem = "open-recent"}
+                onmouseleave={() => hoveredItem = null}>
+                <button class="drop-item" class:hovered={hoveredItem === "open-recent"} role="menuitem">
+                  <span>Open Recent</span>
+                  <span class="arrow">&#9656;</span>
+                </button>
+                {#if hoveredItem === "open-recent"}
+                  <div class="submenu" role="menu">
+                    {#each recentFiles as path}
+                      {@render item(path.split("/").pop() ?? path, () => onOpenRecent(path), undefined, false, `recent-${path}`)}
+                    {/each}
+                    {@render sep()}
+                    {@render item("Clear Recent Files", onClearRecents)}
+                  </div>
+                {/if}
+              </div>
+            {/if}
             {@render sep()}
             {@render item("Save", onSaveFile, "Cmd+S")}
             {@render item("Save As...", onSaveAsFile, "Cmd+Shift+S")}
@@ -183,4 +205,31 @@
 
   .separator { border-top: 1px solid #eee; margin: 4px 0; }
   .dark .separator { border-color: #2a2a35; }
+
+  .submenu-wrapper { position: relative; }
+  .submenu {
+    position: absolute;
+    top: -4px;
+    left: 100%;
+    min-width: 260px;
+    max-width: 400px;
+    padding: 4px 0;
+    background: #fff;
+    border: 1px solid #d8d8dd;
+    border-radius: 8px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    z-index: 1001;
+  }
+  .dark .submenu {
+    background: #1a1a22;
+    border-color: #2a2a35;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.5);
+  }
+  .submenu .drop-item {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .arrow { font-size: 10px; color: #999; }
+  .dark .arrow { color: #666; }
 </style>
