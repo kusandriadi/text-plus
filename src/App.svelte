@@ -164,6 +164,45 @@
     );
   }
 
+  function handleCloseTabsToLeft(tabId: string) {
+    const idx = tabs.findIndex((t) => t.id === tabId);
+    if (idx <= 0) return;
+    const left = tabs.slice(0, idx);
+    confirmIfUnsaved(
+      left.some(isTabModified),
+      "Some tabs to the left have unsaved changes. Close them?",
+      () => {
+        tabs = tabs.slice(idx);
+        if (!tabs.find((t) => t.id === activeTabId)) activeTabId = tabId;
+      },
+    );
+  }
+
+  function handleCloseTabsToRight(tabId: string) {
+    const idx = tabs.findIndex((t) => t.id === tabId);
+    if (idx >= tabs.length - 1) return;
+    const right = tabs.slice(idx + 1);
+    confirmIfUnsaved(
+      right.some(isTabModified),
+      "Some tabs to the right have unsaved changes. Close them?",
+      () => {
+        tabs = tabs.slice(0, idx + 1);
+        if (!tabs.find((t) => t.id === activeTabId)) activeTabId = tabId;
+      },
+    );
+  }
+
+  function handleClearAppData() {
+    confirmDialog = {
+      message: "This will clear all app data and unsaved changes will be lost. The app will restart. Are you sure?",
+      onConfirm: () => {
+        clearSession();
+        localStorage.clear();
+        location.reload();
+      },
+    };
+  }
+
   function handlePrint() {
     const printWindow = window.open("", "_blank");
     if (!printWindow) return;
@@ -212,7 +251,7 @@
     onSaveFile={handleSaveFile} onSaveAsFile={handleSaveAsFile}
     onFormat={handleFormat}
     onPrint={handlePrint}
-    onCloseTab={() => handleCloseTab(activeTabId)} onCloseAllTabs={handleCloseAllTabs}
+    onCloseTab={() => handleCloseTab(activeTabId)} onCloseAllTabs={handleCloseAllTabs} onClearAppData={handleClearAppData}
     onToggleWordWrap={() => wordWrap = !wordWrap}
     onToggleTheme={() => theme = theme === "light" ? "dark" : "light"}
     onShowAbout={() => showAbout = true} onShowShortcuts={() => showShortcuts = true}
@@ -222,6 +261,7 @@
   <TabBar {tabs} {activeTabId} {theme}
     onSelectTab={(id) => activeTabId = id}
     onCloseTab={handleCloseTab} onCloseAllTabs={handleCloseAllTabs} onCloseOtherTabs={handleCloseOtherTabs}
+    onCloseTabsToLeft={handleCloseTabsToLeft} onCloseTabsToRight={handleCloseTabsToRight}
   />
 
   <div class="editor-area">

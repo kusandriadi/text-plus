@@ -25,14 +25,16 @@ Text Plus fills that gap. It's a native macOS app that launches instantly, suppo
 
 ```bash
 brew tap kusandriadi/tap
-brew install --cask text-plus
+brew install --no-quarantine --cask text-plus
 ```
 
 To update:
 
 ```bash
-brew upgrade --cask text-plus
+brew upgrade --no-quarantine --cask text-plus
 ```
+
+> `--no-quarantine` is needed because the app is not signed with an Apple Developer certificate.
 
 ### Download DMG
 

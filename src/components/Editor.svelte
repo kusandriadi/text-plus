@@ -30,17 +30,17 @@
     ".cm-scroller": { overflow: "auto", fontFamily: "'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace" },
     ".cm-content": { padding: "8px 0", caretColor: "#000" },
     ".cm-gutters": { backgroundColor: "#f5f5f5", borderRight: "1px solid #ddd", color: "#999" },
-    ".cm-activeLineGutter": { backgroundColor: "#e2e8f0" },
-    ".cm-activeLine": { backgroundColor: "transparent", boxShadow: "inset 2px 0 0 #007acc" },
+    ".cm-activeLineGutter": { backgroundColor: "#f0e4e7" },
+    ".cm-activeLine": { backgroundColor: "transparent", boxShadow: "inset 2px 0 0 #FF4D6D" },
   });
 
   const darkTheme = EditorView.theme({
     "&": { height: "100%", fontSize: "14px", backgroundColor: "#1e1e1e" },
     ".cm-scroller": { overflow: "auto", fontFamily: "'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace" },
     ".cm-content": { padding: "8px 0", caretColor: "#d4d4d4", color: "#d4d4d4" },
-    ".cm-gutters": { backgroundColor: "#252526", borderRight: "1px solid #3c3c3c", color: "#858585" },
-    ".cm-activeLineGutter": { backgroundColor: "#2a2d2e" },
-    ".cm-activeLine": { backgroundColor: "transparent", boxShadow: "inset 2px 0 0 #007acc" },
+    ".cm-gutters": { backgroundColor: "#1a1a22", borderRight: "1px solid #2a2a35", color: "#858585" },
+    ".cm-activeLineGutter": { backgroundColor: "#22222c" },
+    ".cm-activeLine": { backgroundColor: "transparent", boxShadow: "inset 2px 0 0 #FF4D6D" },
     ".cm-cursor": { borderLeftColor: "#d4d4d4" },
   });
 

@@ -38,7 +38,7 @@
   }
 }
 
-/* Editor text selection */
+/* Editor text selection — brand coral tint instead of VS Code light blue. */
 .cm-editor, .cm-content, .md-preview {
   -webkit-user-select: text !important;
   user-select: text !important;
@@ -46,10 +46,9 @@
 
 .cm-editor .cm-selectionBackground,
 .cm-editor.cm-focused .cm-selectionBackground {
-  background-color: #add6ff !important;
+  background-color: rgba(255, 77, 109, 0.22) !important;
 }
 .theme-dark .cm-editor .cm-selectionBackground,
 .theme-dark .cm-editor.cm-focused .cm-selectionBackground {
-  background-color: #264f78 !important;
+  background-color: rgba(255, 77, 109, 0.32) !important;
 }
-

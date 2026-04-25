@@ -16,7 +16,7 @@
   });
 </script>
 
-<div class="toast" class:dark={isDark}>{message}</div>
+<div class="toast" class:dark={isDark} role="status" aria-live="polite">{message}</div>
 
 <style>
   .toast {
@@ -34,5 +34,5 @@
     max-width: 400px;
     text-align: center;
   }
-  .toast.dark { background: #444; }
+  .toast.dark { background: #1a1a22; border: 1px solid #2a2a35; }
 </style>

@@ -9,9 +9,11 @@
     onCloseTab: (id: string) => void;
     onCloseAllTabs: () => void;
     onCloseOtherTabs: (id: string) => void;
+    onCloseTabsToLeft: (id: string) => void;
+    onCloseTabsToRight: (id: string) => void;
   }
 
-  let { tabs, activeTabId, theme, onSelectTab, onCloseTab, onCloseAllTabs, onCloseOtherTabs }: Props = $props();
+  let { tabs, activeTabId, theme, onSelectTab, onCloseTab, onCloseAllTabs, onCloseOtherTabs, onCloseTabsToLeft, onCloseTabsToRight }: Props = $props();
 
   let contextMenu = $state<{ x: number; y: number; tabId: string } | null>(null);
   let hoveredTab = $state<string | null>(null);
@@ -65,6 +67,8 @@
     style="top:{contextMenu.y}px;left:{contextMenu.x}px">
     {@render ctxItem("Close", () => { onCloseTab(contextMenu!.tabId); contextMenu = null; })}
     {@render ctxItem("Close Others", () => { onCloseOtherTabs(contextMenu!.tabId); contextMenu = null; }, tabs.length <= 1)}
+    {@render ctxItem("Close Tabs to the Left", () => { onCloseTabsToLeft(contextMenu!.tabId); contextMenu = null; }, tabs.indexOf(tabs.find(t => t.id === contextMenu!.tabId)!) === 0)}
+    {@render ctxItem("Close Tabs to the Right", () => { onCloseTabsToRight(contextMenu!.tabId); contextMenu = null; }, tabs.indexOf(tabs.find(t => t.id === contextMenu!.tabId)!) === tabs.length - 1)}
     {@render ctxItem("Close All", () => { onCloseAllTabs(); contextMenu = null; })}
   </div>
 {/if}
@@ -81,6 +85,7 @@
 {/snippet}
 
 <style>
+  /* Brand-aligned tab bar — coral active indicator instead of VS Code blue. */
   .tabbar {
     display: flex;
     align-items: flex-end;
@@ -93,7 +98,7 @@
     flex-shrink: 0;
     scrollbar-width: none;
   }
-  .tabbar.dark { background: #252526; border-color: #3c3c3c; }
+  .tabbar.dark { background: #1a1a22; border-color: #2a2a35; }
 
   .tab {
     display: flex;
@@ -107,12 +112,17 @@
     background: #ececec;
     border-right: 1px solid #d0d0d0;
     border-top: 2px solid transparent;
+    transition: background 120ms ease;
   }
-  .dark .tab { background: #2d2d2d; border-right-color: #3c3c3c; }
-  .tab.active { background: #fff; border-top-color: #007acc; }
-  .dark .tab.active { background: #1e1e1e; border-top-color: #007acc; }
-  .tab.hovered { background: #e0e0e0; }
-  .dark .tab.hovered { background: #383838; }
+  .dark .tab { background: #22222c; border-right-color: #2a2a35; }
+
+  /* active = coral top border (was #007acc) */
+  .tab.active { background: #fff; border-top-color: #FF4D6D; }
+  .dark .tab.active { background: #0e0e14; border-top-color: #FF4D6D; }
+
+  /* hovered = subtle coral wash */
+  .tab.hovered { background: #f0e4e7; }
+  .dark .tab.hovered { background: #2c2330; }
 
   .tab-name {
     font-size: 12px;
@@ -123,7 +133,7 @@
     color: #666;
   }
   .dark .tab-name { color: #999; }
-  .tab-name-active { color: #333; }
+  .tab-name-active { color: #111; }
   .dark .tab-name-active { color: #fff; }
 
   .close-btn {
@@ -139,19 +149,19 @@
     color: inherit;
   }
   .close-btn.close-hover { background: #ccc; }
-  .dark .close-btn.close-hover { background: #555; }
+  .dark .close-btn.close-hover { background: #2a2a35; }
 
   .ctx-menu {
     position: fixed;
     min-width: 180px;
     padding: 4px 0;
     background: #fff;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    border: 1px solid #d8d8dd;
+    border-radius: 8px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
     z-index: 1000;
   }
-  .ctx-menu.dark { background: #2d2d2d; border-color: #555; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+  .ctx-menu.dark { background: #1a1a22; border-color: #2a2a35; box-shadow: 0 6px 16px rgba(0,0,0,0.5); }
 
   .ctx-item {
     display: block;
@@ -162,8 +172,9 @@
     color: #333;
   }
   .dark .ctx-item { color: #ccc; }
-  .ctx-item.ctx-hover { background: #e8f0fe; }
-  .dark .ctx-item.ctx-hover { background: #094771; }
+  /* hover = coral tint instead of #e8f0fe blue */
+  .ctx-item.ctx-hover { background: rgba(255, 77, 109, 0.1); }
+  .dark .ctx-item.ctx-hover { background: rgba(255, 77, 109, 0.18); }
   .ctx-item.ctx-disabled { color: #bbb; cursor: default; }
-  .dark .ctx-item.ctx-disabled { color: #555; }
+  .dark .ctx-item.ctx-disabled { color: #4a4a55; }
 </style>

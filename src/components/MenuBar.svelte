@@ -13,6 +13,7 @@
     onPrint: () => void;
     onCloseTab: () => void;
     onCloseAllTabs: () => void;
+    onClearAppData: () => void;
     onToggleWordWrap: () => void;
     onToggleTheme: () => void;
     onShowAbout: () => void;
@@ -20,7 +21,7 @@
     onLanguageChange: (lang: LanguageId) => void;
   }
 
-  let { theme, language, wordWrap, onNewFile, onOpenFile, onSaveFile, onSaveAsFile, onFormat, onPrint, onCloseTab, onCloseAllTabs, onToggleWordWrap, onToggleTheme, onShowAbout, onShowShortcuts, onLanguageChange }: Props = $props();
+  let { theme, language, wordWrap, onNewFile, onOpenFile, onSaveFile, onSaveAsFile, onFormat, onPrint, onCloseTab, onCloseAllTabs, onClearAppData, onToggleWordWrap, onToggleTheme, onShowAbout, onShowShortcuts, onLanguageChange }: Props = $props();
 
   type MenuKey = "file" | "view" | "format" | "language" | "help";
   let openMenu = $state<MenuKey | null>(null);
@@ -55,12 +56,14 @@
       <button
         class="menu-btn"
         class:active={openMenu === menu.key}
+        aria-expanded={openMenu === menu.key}
+        aria-haspopup="menu"
         onclick={() => toggleMenu(menu.key)}
         onmouseenter={() => handleMenuHover(menu.key)}
       >{menu.label}</button>
 
       {#if openMenu === menu.key}
-        <div class="dropdown" class:lang-dropdown={menu.key === "language"}>
+        <div class="dropdown" class:lang-dropdown={menu.key === "language"} role="menu">
           {#if menu.key === "file"}
             {@render item("New File", onNewFile, "Cmd+N")}
             {@render item("Open File", onOpenFile, "Cmd+O")}
@@ -72,6 +75,8 @@
             {@render sep()}
             {@render item("Close Tab", onCloseTab, "Cmd+W")}
             {@render item("Close All Tabs", onCloseAllTabs)}
+            {@render sep()}
+            {@render item("Clear App Data", onClearAppData)}
           {:else if menu.key === "view"}
             {@render item(`Word Wrap${wordWrap ? '  ✓' : ''}`, onToggleWordWrap, "Alt+Z", wordWrap)}
             {@render sep()}
@@ -100,6 +105,7 @@
     class="drop-item"
     class:hovered
     class:active-item={active}
+    role="menuitem"
     onclick={() => handleAction(action)}
     onmouseenter={() => hoveredItem = itemId}
     onmouseleave={() => hoveredItem = null}
@@ -110,7 +116,7 @@
 {/snippet}
 
 {#snippet sep()}
-  <div class="separator"></div>
+  <div class="separator" role="separator"></div>
 {/snippet}
 
 <style>
@@ -124,7 +130,7 @@
     user-select: none;
     flex-shrink: 0;
   }
-  .menubar.dark { background: #333; border-color: #4a4a4a; }
+  .menubar.dark { background: #1a1a22; border-color: #2a2a35; }
 
   .menu-wrapper { position: relative; }
 
@@ -136,7 +142,7 @@
   }
   .dark .menu-btn { color: #ccc; }
   .menu-btn.active { background: #d0d0d0; }
-  .dark .menu-btn.active { background: #505050; }
+  .dark .menu-btn.active { background: #2a2a35; }
 
   .dropdown {
     position: absolute;
@@ -145,15 +151,15 @@
     min-width: 220px;
     padding: 4px 0;
     background: #fff;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    border: 1px solid #d8d8dd;
+    border-radius: 8px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
     z-index: 1000;
   }
   .dark .dropdown {
-    background: #2d2d2d;
-    border-color: #555;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    background: #1a1a22;
+    border-color: #2a2a35;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.5);
   }
   .lang-dropdown { max-height: 300px; overflow-y: auto; }
 
@@ -168,13 +174,13 @@
     color: #333;
   }
   .dark .drop-item { color: #ccc; }
-  .drop-item.hovered, .drop-item.active-item { background: #e8f0fe; }
-  .dark .drop-item.hovered, .dark .drop-item.active-item { background: #094771; }
+  .drop-item.hovered, .drop-item.active-item { background: rgba(255, 77, 109, 0.1); }
+  .dark .drop-item.hovered, .dark .drop-item.active-item { background: rgba(255, 77, 109, 0.18); }
   .drop-item.active-item { font-weight: 600; }
 
   .shortcut { color: #999; font-size: 12px; margin-left: 24px; }
   .dark .shortcut { color: #777; }
 
   .separator { border-top: 1px solid #eee; margin: 4px 0; }
-  .dark .separator { border-color: #555; }
+  .dark .separator { border-color: #2a2a35; }
 </style>
