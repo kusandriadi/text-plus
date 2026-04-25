@@ -162,6 +162,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
           git rm -f Casks/text-plus.rb 2>/dev/null || true
+          mkdir -p Casks
 
           cat > Casks/textng.rb << CASKEOF
           cask "textng" do
